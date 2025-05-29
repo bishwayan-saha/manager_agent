@@ -4,7 +4,7 @@ from typing import List
 
 import requests
 from dotenv import load_dotenv
-from google.adk.agents.llm_agent import LlmAgent
+from google.adk.agents import Agent
 from google.adk.artifacts import InMemoryArtifactService
 from google.adk.memory.in_memory_memory_service import InMemoryMemoryService
 from google.adk.runners import Runner
@@ -60,8 +60,8 @@ class HostAgent:
             memory_service=InMemoryMemoryService(),
         )
 
-    def _build_agent(self) -> LlmAgent:
-        return LlmAgent(
+    def _build_agent(self) -> Agent:
+        return Agent(
             model="gemini-2.0-flash",
             name="host_agent",
             description="""The host agent is responsible for coordinating the 
@@ -77,12 +77,11 @@ class HostAgent:
                             - `delegate_task(agent_name, message)`: Assign tasks to an agent.
 
                             2. **MCP Tools**:
-                            - Function tools, including an **Airbnb MCP tool**.
+                            - Function tools, including an **Airbnb MCP tool** Use this tool only and no other tools or agents for any hotel related query
 
                             ### **Available Remote Agents**
                             - {", ".join([agent for agent in self.agent_connectors.keys()])}
                             - If you are certain about using an remote agent based on user prompt, delegate the task immediately.
-                            - If you think other agents and tools are unable to process the prompt, send to search_agent.
 
                             ### **Guidelines**
                             - **Use available tools** to fetch or process information instead of guessing.

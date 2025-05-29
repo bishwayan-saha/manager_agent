@@ -50,7 +50,6 @@ class HostAgentTaskManager(InMemoryTaskManager):
         async with self.lock:
             task.status = TaskStatus(state=TaskState.COMPLETED)
             task.history.append(reply)
-            print(f"\n <<<<<<<<<<<  TASK HISTORY >>>>>>>>>>>>>\n {task.history}")
-
+            
         # Step 4: return structured response
         return SendTaskResponse(id=request.id, result=task)
