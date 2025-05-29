@@ -4,6 +4,7 @@ from agent.agent import HostAgent
 from models.request import SendTaskRequest, SendTaskResponse
 from models.task import Message, TaskState, TaskStatus, TextPart
 from server.task_manager import InMemoryTaskManager
+import json
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -45,10 +46,11 @@ class HostAgentTaskManager(InMemoryTaskManager):
 
         # Step 3: wrap the LLM output into a Message
         reply = Message(role="agent", parts=[TextPart(text=response_text)])
-        logger.info(f"\nOutgoing JSON Response:\n {reply.model_dump()}")
+        logger.info(f"\nOutgoing JSON Response:\n {json.dumps(reply.model_dump(), indent=2)}")
         async with self.lock:
             task.status = TaskStatus(state=TaskState.COMPLETED)
             task.history.append(reply)
+            print(f"\n <<<<<<<<<<<  TASK HISTORY >>>>>>>>>>>>>\n {task.history}")
 
         # Step 4: return structured response
         return SendTaskResponse(id=request.id, result=task)

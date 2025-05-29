@@ -41,6 +41,8 @@ def main(host: str, port: int):
     discovery = DiscoveryClient()
     agent_cards = asyncio.run(discovery.fetch_agent_cards())
 
+    logger.info(f"Available agents are: \n {[(agent.name, agent.capabilities) for agent in agent_cards]}")
+
     if not agent_cards:
         logger.warning(
             "No agents found in registry – the orchestrator will have nothing to call"

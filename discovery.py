@@ -42,9 +42,9 @@ class DiscoveryClient:
             "https://interop-ae-chat.azurewebsites.net/agent_cards"
         ).json()
 
-        for response in responses["message"]:
+        for response in responses["data"]:
             try:
-                card = AgentCard.model_validate(ast.literal_eval(response))
+                card = AgentCard.model_validate(response)
                 agent_cards.append(card)
             except Exception as e:
                 logger.info(f"Error occurred while fetching well known url {e}")
