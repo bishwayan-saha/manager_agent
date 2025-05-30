@@ -26,8 +26,13 @@ class HostAgent:
             card.name: AgentConnector(card.name, card.url) for card in agent_cards
         }
 
+        self.agent_descriptions = {
+            card.name: f"{card.description + " " + ".\n ".join([skill.description for skill in card.skills])}" for card in agent_cards
+        }
+
         self._credentials = requests.get(
-            "https://interop-ae-chat.azurewebsites.net/credentials"
+            # "https://interop-ae-chat.azurewebsites.net/credentials"
+            "http://localhost:8000/credentials"
         ).json()
         for creds in self._credentials["data"]:
             os.environ[creds] = self._credentials["data"].get(creds)
@@ -81,6 +86,7 @@ class HostAgent:
 
                             ### **Available Remote Agents**
                             - {", ".join([agent for agent in self.agent_connectors.keys()])}
+                            - {str(self.agent_descriptions)}
                             - If you are certain about using an remote agent based on user prompt, delegate the task immediately.
 
                             ### **Guidelines**
@@ -99,6 +105,7 @@ class HostAgent:
         Tool function: returns the list of child-agent names currently registered.
         Called by the LLM when it wants to discover available agents.
         """
+        print(f"List agents {list(self.agent_connectors.keys())}")
         return list(self.agent_connectors.keys())
 
     async def _delegate_task(

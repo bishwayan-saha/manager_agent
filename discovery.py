@@ -39,7 +39,8 @@ class DiscoveryClient:
         """
         agent_cards: List[AgentCard] = []
         responses = requests.get(
-            "https://interop-ae-chat.azurewebsites.net/agent_cards"
+            # "https://interop-ae-chat.azurewebsites.net/agent_cards"
+            "http://localhost:8000/agent_cards"
         ).json()
 
         for response in responses["data"]:
