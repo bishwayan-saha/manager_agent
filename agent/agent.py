@@ -88,6 +88,8 @@ class HostAgent:
                             - {", ".join([agent for agent in self.agent_connectors.keys()])}
                             - {str(self.agent_descriptions)}
                             - If you are certain about using an remote agent based on user prompt, delegate the task immediately.
+                            - While using remote agent, **DO NOT** generate response by yourself, 
+                                wait for the remote agent response and pass that to the caller
 
                             ### **Guidelines**
                             - **Use available tools** to fetch or process information instead of guessing.
