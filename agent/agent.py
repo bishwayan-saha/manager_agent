@@ -32,7 +32,7 @@ class HostAgent:
 
         self._credentials = requests.get(
             # "https://interop-ae-chat.azurewebsites.net/credentials"
-            "http://localhost:8000/credentials"
+            "http://4.247.151.9:3100/credentials"
         ).json()
         for creds in self._credentials["data"]:
             os.environ[creds] = self._credentials["data"].get(creds)
