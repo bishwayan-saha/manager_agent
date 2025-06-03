@@ -1,6 +1,9 @@
 # Use an official Python base image
 FROM python:3.13.3-slim
 
+# Install Node.js and npm
+RUN apt-get update && apt-get install -y nodejs npm
+
 # Set the working directory in the container
 WORKDIR /app
 
