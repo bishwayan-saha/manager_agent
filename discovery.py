@@ -6,6 +6,9 @@ from typing import List
 import requests
 
 from models.agent import AgentCard
+from dotenv import load_dotenv
+
+load_dotenv()
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -38,9 +41,10 @@ class DiscoveryClient:
             List[AgentCard]: Successfully retrieved agent cards.
         """
         agent_cards: List[AgentCard] = []
+        server_domain = os.getenv("SERVER_DOMAIN") or "http://localhost"
+        logger.info(f"Server domain for calling agent cards: {server_domain}")
         responses = requests.get(
-            # "https://interop-ae-chat.azurewebsites.net/agent_cards"
-            "http://4.247.151.9:3100/agent_cards"
+            f"{server_domain}:3100/agent_cards"
         ).json()
 
         for response in responses["data"]:

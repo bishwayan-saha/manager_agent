@@ -43,6 +43,7 @@ class A2AClient:
     
     async def _send_request(self, request: JSONRPCRequest) -> dict[str, Any]:
         async with httpx.AsyncClient() as client:
+            logger.info(f"Client URL {self.url}")
             try:
                 response = await client.post(
                     self.url,

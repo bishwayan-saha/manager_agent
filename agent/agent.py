@@ -16,7 +16,12 @@ from google.genai import types
 from agent.agent_connector import AgentConnector
 from mcp_connect import MCPConnector
 from models.agent import AgentCard
+from dotenv import load_dotenv
+import logging
+load_dotenv()
 
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 class HostAgent:
     SUPPORTED_CONTENT_TYPES = ["text", "text/plain"]
@@ -29,10 +34,10 @@ class HostAgent:
         self.agent_descriptions = {
             card.name: f"{card.description + " " + ".\n ".join([skill.description for skill in card.skills])}" for card in agent_cards
         }
-
+        server_domain = os.getenv("SERVER_DOMAIN") or "http://localhost"
+        logger.info(f"Server domain for calling credentials: {server_domain}")
         self._credentials = requests.get(
-            # "https://interop-ae-chat.azurewebsites.net/credentials"
-            "http://4.247.151.9:3100/credentials"
+            f"{server_domain}:3100/credentials"
         ).json()
         for creds in self._credentials["data"]:
             os.environ[creds] = self._credentials["data"].get(creds)
