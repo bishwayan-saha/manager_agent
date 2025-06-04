@@ -1,10 +1,11 @@
+import logging
 import os
 import uuid
 from typing import List
 
 import requests
 from dotenv import load_dotenv
-from google.adk.agents import Agent
+from google.adk.agents.llm_agent import LlmAgent
 from google.adk.artifacts import InMemoryArtifactService
 from google.adk.memory.in_memory_memory_service import InMemoryMemoryService
 from google.adk.runners import Runner
@@ -16,8 +17,7 @@ from google.genai import types
 from agent.agent_connector import AgentConnector
 from mcp_connect import MCPConnector
 from models.agent import AgentCard
-from dotenv import load_dotenv
-import logging
+
 load_dotenv()
 
 logging.basicConfig(level=logging.INFO)
@@ -70,8 +70,8 @@ class HostAgent:
             memory_service=InMemoryMemoryService(),
         )
 
-    def _build_agent(self) -> Agent:
-        return Agent(
+    def _build_agent(self) -> LlmAgent:
+        return LlmAgent(
             model="gemini-2.0-flash",
             name="host_agent",
             description="""The host agent is responsible for coordinating the 
@@ -105,6 +105,7 @@ class HostAgent:
                         """,
                         
             tools=[self._list_agents, self._delegate_task, *self._mcp_wrappers],
+            output_key="manager"
         )
 
     def _list_agents(self) -> List[str]:
@@ -167,6 +168,8 @@ class HostAgent:
                 user_id=self._user_id, session_id=session.id, new_message=content
             )
         )
+        current_session = self._runner.session_service.get_session(app_name=self._agent.name, user_id=self._user_id, session_id=session_id)
+        stored_output = current_session.state.get(self._runner.agent.output_key)
 
         # If no content or parts, return empty fallback
         if not events or not events[-1].content or not events[-1].content.parts:
