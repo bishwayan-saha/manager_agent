@@ -87,7 +87,7 @@ class A2AServer:
         def reload_server():
             logger.info(" --- Reloading the server after onboarding new agent ---")
             pid = os.getpid()  # Get the current process ID
-            os.kill(pid, signal.SIGTERM)
+            # os.kill(pid, signal.SIGTERM)
             subprocess.Popen([sys.executable, "-m", "agent"])
             # uvicorn.run(self.app, host=self.host, port=self.port)
 
