@@ -10,6 +10,10 @@ from models.agent import AgentCard
 from models.json_rpc import InternalError, JSONRPCResponse
 from models.request import A2ARequest, SendTaskRequest
 from server.task_manager import TaskManager
+import subprocess
+import sys
+import os
+import signal
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -78,6 +82,14 @@ class A2AServer:
                     ).model_dump(),
                     status_code=400,
                 )
+        
+        @self.app.post("/reload")
+        def reload_server():
+            logger.info(" --- Reloading the server after onboarding new agent ---")
+            pid = os.getpid()  # Get the current process ID
+            os.kill(pid, signal.SIGTERM)
+            subprocess.Popen([sys.executable, "-m", "agent"])
+            # uvicorn.run(self.app, host=self.host, port=self.port)
 
     def create_response(self, result):
         """
